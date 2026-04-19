@@ -1,0 +1,56 @@
+name: Build Unsigned IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  build:
+    name: Build unsigned IPA
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Build unsigned app
+        run: |
+          set -euo pipefail
+
+          xcodebuild build \
+            -project "ES-iOS.xcodeproj" \
+            -target "ES-iOS" \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath "$PWD/build/DerivedData" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY=""
+
+      - name: Package unsigned IPA
+        run: |
+          set -euo pipefail
+
+          APP_PATH="$PWD/build/DerivedData/Build/Products/Release-iphoneos/ES-iOS.app"
+          IPA_PATH="$PWD/build/ES-iOS-unsigned.ipa"
+
+          test -d "$APP_PATH"
+          rm -rf "$PWD/build/Payload" "$IPA_PATH"
+          mkdir -p "$PWD/build/Payload"
+          cp -R "$APP_PATH" "$PWD/build/Payload/"
+
+          cd "$PWD/build"
+          zip -qry "$IPA_PATH" Payload
+
+      - name: Upload unsigned IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: ES-iOS-unsigned-ipa
+          path: build/ES-iOS-unsigned.ipa
+          if-no-files-found: error

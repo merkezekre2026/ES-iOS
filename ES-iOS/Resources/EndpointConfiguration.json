@@ -1,0 +1,18 @@
+{
+  "linesCSVURL": "https://openfiles.izmir.bel.tr/211488/docs/eshot-otobus-hatlari.csv",
+  "stopsCSVURL": "https://openfiles.izmir.bel.tr/211488/docs/eshot-otobus-duraklari.csv",
+  "timetableCSVURL": "https://openfiles.izmir.bel.tr/211488/docs/eshot-otobus-hareketsaatleri.csv",
+  "routeGeometryCSVURL": "https://openfiles.izmir.bel.tr/211488/docs/eshot-otobus-hat-guzergahlari.csv",
+  "nearbyStopsURLTemplate": "https://openapi.izmir.bel.tr/api/ibb/cbs/noktayayakinduraklar?x={lon}&y={lat}&inCoordSys=EPSG:4326&outCoordSys=EPSG:4326",
+  "approachingBusesURLTemplate": "https://openapi.izmir.bel.tr/api/iztek/duragayaklasanotobusler/{stopId}",
+  "lineApproachingStopURLTemplate": "https://openapi.izmir.bel.tr/api/iztek/hattinyaklasanotobusleri/{lineId}/{stopId}",
+  "lineVehiclesURLTemplate": "https://openapi.izmir.bel.tr/api/iztek/hatotobuskonumlari/{lineId}",
+  "requestTimeoutSeconds": 20,
+  "realtimeStaleAfterSeconds": 90,
+  "serviceTypeLabels": {
+    "1": "Hafta içi",
+    "2": "Cumartesi",
+    "3": "Pazar"
+  },
+  "attribution": "Veriler İzmir Büyükşehir Belediyesi Açık Veri Portalı ve ESHOT/İzmir İnovasyon ve Teknoloji A.Ş. açık servislerinden alınır."
+}
