@@ -1,6 +1,6 @@
 # ES-iOS
 
-ES-iOS is a native SwiftUI iPhone app for ESHOT bus information in İzmir. It uses official İzmir Metropolitan Municipality open data sources for lines, stops, static schedules, route geometry, nearby stops, and available realtime bus position/approaching-stop APIs.
+ES-iOS is a native Universal SwiftUI app for ESHOT bus information in İzmir on iPhone and iPad. It uses official İzmir Metropolitan Municipality open data sources for lines, stops, static schedules, route geometry, nearby stops, and available realtime bus position/approaching-stop APIs.
 
 ## Requirements
 
@@ -8,7 +8,7 @@ ES-iOS is a native SwiftUI iPhone app for ESHOT bus information in İzmir. It us
 - iOS 17.0 or newer
 - No third-party packages
 
-Open `ES-iOS.xcodeproj`, select the `ES-iOS` scheme, and run on a simulator or device. Nearby stops require location permission, so a real device gives the best result.
+Open `ES-iOS.xcodeproj`, select the `ES-iOS` scheme, and run on an iPhone or iPad simulator or device. iPhone keeps the compact tab-based experience, while iPad uses an adaptive sidebar and detail layout in portrait and landscape. Nearby stops require location permission, so a real device gives the best result.
 
 ## Data Sources
 
@@ -53,7 +53,7 @@ The Settings screen includes source attribution, the latest loaded timestamp, an
 - `TransportDataServiceProtocol` makes services unit-testable.
 - `TransportDataService` uses async/await, `URLSession`, Codable JSON decoders, CSV parsing, and cache fallback.
 - `LocationService` wraps CoreLocation permission and current location.
-- Screens are organized as tab-based `NavigationStack`s: Home, Lines, Stops, Nearby, Favorites, and Settings.
+- Screens are organized adaptively: compact width uses tab-based `NavigationStack`s, and regular width uses `NavigationSplitView` with a sidebar for Home, Lines, Stops, Nearby, Favorites, and Settings.
 
 ## Tests
 

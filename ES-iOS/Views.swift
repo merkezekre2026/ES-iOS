@@ -44,7 +44,102 @@ struct RootTabView: View {
             }
             .tabItem { Label("Ayarlar", systemImage: "gearshape") }
         }
+    }
+}
+
+struct AdaptiveRootView: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @EnvironmentObject private var container: AppContainer
+
+    var body: some View {
+        Group {
+            if horizontalSizeClass == .regular {
+                RootSplitView(container: container)
+            } else {
+                RootTabView()
+            }
+        }
         .task { await container.bootstrap() }
+    }
+}
+
+enum AppSection: String, CaseIterable, Identifiable, Hashable {
+    case home
+    case lines
+    case stops
+    case nearby
+    case favorites
+    case settings
+
+    var id: Self { self }
+
+    var title: String {
+        switch self {
+        case .home: "Ana Sayfa"
+        case .lines: "Hatlar"
+        case .stops: "Duraklar"
+        case .nearby: "Yakınımda"
+        case .favorites: "Favoriler"
+        case .settings: "Ayarlar"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .home: "house"
+        case .lines: "bus"
+        case .stops: "mappin.and.ellipse"
+        case .nearby: "location"
+        case .favorites: "star"
+        case .settings: "gearshape"
+        }
+    }
+}
+
+private struct RootSplitView: View {
+    @ObservedObject var container: AppContainer
+    @State private var selectedSection: AppSection? = .home
+
+    var body: some View {
+        NavigationSplitView {
+            List(AppSection.allCases, selection: $selectedSection) { section in
+                Label(section.title, systemImage: section.systemImage)
+                    .tag(section)
+            }
+            .navigationTitle("ES-iOS")
+        } detail: {
+            NavigationStack {
+                sectionView(selectedSection ?? .home)
+                    .transportDestinations(container: container)
+            }
+            .id(selectedSection ?? .home)
+        }
+    }
+
+    @ViewBuilder
+    private func sectionView(_ section: AppSection) -> some View {
+        switch section {
+        case .home:
+            HomeView(container: container)
+        case .lines:
+            LineSearchView(container: container)
+        case .stops:
+            StopSearchView(container: container)
+        case .nearby:
+            NearbyStopsView(container: container)
+        case .favorites:
+            FavoritesView(container: container)
+        case .settings:
+            SettingsView(container: container)
+        }
+    }
+}
+
+private extension View {
+    func transportDestinations(container: AppContainer) -> some View {
+        self
+            .navigationDestination(for: BusLine.self) { LineDetailView(line: $0, container: container) }
+            .navigationDestination(for: BusStop.self) { StopDetailView(stop: $0, container: container) }
     }
 }
 

@@ -6,7 +6,7 @@ struct ES_iOSApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootTabView()
+            AdaptiveRootView()
                 .environmentObject(container)
                 .environmentObject(container.favorites)
                 .environmentObject(container.recents)
