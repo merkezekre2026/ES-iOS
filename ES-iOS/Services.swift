@@ -186,7 +186,7 @@ struct SearchEngine {
     func lines(_ lines: [BusLine], matching query: String) -> [BusLine] {
         let q = query.normalizedForSearch().trimmingCharacters(in: .whitespacesAndNewlines)
         guard !q.isEmpty else { return lines }
-        return lines.compactMap { line in
+        let scoredLines: [(line: BusLine, score: Int)] = lines.compactMap { line in
             let number = line.number.normalizedForSearch()
             let text = "\(line.title) \(line.routeSummary) \(line.start) \(line.end)".normalizedForSearch()
             let score: Int?
@@ -195,16 +195,24 @@ struct SearchEngine {
             else if number.contains(q) { score = 2 }
             else if text.contains(q) { score = 3 }
             else { score = nil }
-            return score.map { (line, $0) }
+            guard let score else { return nil }
+            return (line: line, score: score)
         }
-        .sorted { lhs, rhs in lhs.1 == rhs.1 ? lhs.0.number.localizedStandardCompare(rhs.0.number) == .orderedAscending : lhs.1 < rhs.1 }
-        .map(\.0)
+
+        return scoredLines
+            .sorted { lhs, rhs in
+                if lhs.score == rhs.score {
+                    return lhs.line.number.localizedStandardCompare(rhs.line.number) == .orderedAscending
+                }
+                return lhs.score < rhs.score
+            }
+            .map(\.line)
     }
 
     func stops(_ stops: [BusStop], matching query: String) -> [BusStop] {
         let q = query.normalizedForSearch().trimmingCharacters(in: .whitespacesAndNewlines)
         guard !q.isEmpty else { return stops }
-        return stops.compactMap { stop in
+        let scoredStops: [(stop: BusStop, score: Int)] = stops.compactMap { stop in
             let id = stop.stopID.normalizedForSearch()
             let name = stop.name.normalizedForSearch()
             let score: Int?
@@ -215,10 +223,18 @@ struct SearchEngine {
                 let distance = levenshtein(q, name)
                 score = distance <= max(2, q.count / 3) ? 3 + distance : nil
             }
-            return score.map { (stop, $0) }
+            guard let score else { return nil }
+            return (stop: stop, score: score)
         }
-        .sorted { lhs, rhs in lhs.1 == rhs.1 ? lhs.0.name.localizedStandardCompare(rhs.0.name) == .orderedAscending : lhs.1 < rhs.1 }
-        .map(\.0)
+
+        return scoredStops
+            .sorted { lhs, rhs in
+                if lhs.score == rhs.score {
+                    return lhs.stop.name.localizedStandardCompare(rhs.stop.name) == .orderedAscending
+                }
+                return lhs.score < rhs.score
+            }
+            .map(\.stop)
     }
 
     private func levenshtein(_ lhs: String, _ rhs: String) -> Int {

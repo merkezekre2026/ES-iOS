@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 enum PreviewData {
     static let line = BusLine(number: "5", title: "NARLIDERE - ÜÇKUYULAR İSKELE", routeSummary: "MİTHAT PAŞA CAD. - F.ALTAY AKT.", note: nil, start: "NARLIDERE", end: "ÜÇKUYULAR İSKELE", isNightLine: false)
