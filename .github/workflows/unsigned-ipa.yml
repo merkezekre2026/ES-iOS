@@ -28,7 +28,7 @@ jobs:
             -target "ES-iOS" \
             -configuration Release \
             -sdk iphoneos \
-            -derivedDataPath "$PWD/build/DerivedData" \
+            CONFIGURATION_BUILD_DIR="$PWD/build/Release-iphoneos" \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY=""
@@ -37,7 +37,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          APP_PATH="$PWD/build/DerivedData/Build/Products/Release-iphoneos/ES-iOS.app"
+          APP_PATH="$PWD/build/Release-iphoneos/ES-iOS.app"
           IPA_PATH="$PWD/build/ES-iOS-unsigned.ipa"
 
           test -d "$APP_PATH"
